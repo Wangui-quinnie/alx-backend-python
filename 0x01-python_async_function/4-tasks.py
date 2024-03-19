@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Creates an asyncio.Task for the wait_n coroutine.
+Returns the list of random default values in ascending order.
 """
 
 import asyncio
-from typing import List, Callable
-
+from typing import List
+from random import uniform
+from itertools import repeat
 
 task_wait_random = __import__('3-tasks').task_wait_random
 
@@ -22,6 +23,6 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
         List[float]: A list of delays.
     """
     delays: List[float] = await asyncio.gather(
-        *(wait_random(max_delay) for _ in range(n))
+        *(wait_random(max_delay) for _ in repeat(None, n))
         )
     return sorted(delays)
