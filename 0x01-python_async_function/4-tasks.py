@@ -3,8 +3,9 @@
 Creates an asyncio.Task for the wait_n coroutine.
 """
 
-from typing import List, Callable
 import asyncio
+from typing import List, Callable
+
 
 task_wait_random = __import__('3-tasks').task_wait_random
 
