@@ -78,5 +78,18 @@ def test_public_repos(self, mock_public_repos_url, mock_get_json):
     )
 
 
+@parameterized.expand([
+    ({"license": {"key": "my_license"}}, "my_license", True),
+    ({"license": {"key": "other_license"}}, "my_license", False)
+])
+def test_has_license(self, repo, license_key, expected_result):
+    """
+        Test has_license method of GithubOrgClient class.
+        """
+    github_client = GithubOrgClient("testorg")
+    result = github_client.has_license(repo, license_key)
+    self.assertEqual(result, expected_result)
+
+
 if __name__ == "__main__":
     unittest.main()
