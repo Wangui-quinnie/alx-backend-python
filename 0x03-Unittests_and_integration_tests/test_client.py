@@ -7,7 +7,50 @@ Test Client Module
 import unittest
 from unittest.mock import patch
 from client import GithubOrgClient
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
+
+
+@parameterized_class(
+    ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'),
+    [
+        (org_payload, repos_payload, expected_repos, apache2_repos)
+    ]
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    Integration test for GithubOrgClient class.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Set up the test environment.
+        """
+        cls.get_patcher = patch('client.get_json')
+        cls.mock_get_json = cls.get_patcher.start()
+
+        # Set side_effect for mock_get_json to return example payloads
+        cls.mock_get_json.side_effect = [
+            cls.org_payload,
+            cls.repos_payload
+        ]
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Tear down the test environment.
+        """
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """
+        Test public_repos method of GithubOrgClient class.
+        """
+        github_client = GithubOrgClient("testorg")
+        result = github_client.public_repos("Apache-2.0")
+
+        self.assertEqual(result, self.apache2_repos)
 
 
 class TestGithubOrgClient(unittest.TestCase):
