@@ -6,7 +6,7 @@ Utils Module
 
 from parameterized import parameterized
 import unittest
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Callable
 import requests
 from unittest.mock import patch, Mock
 from functools import wraps
@@ -130,14 +130,14 @@ class TestMemoize(unittest.TestCase):
             TestClass with a memoized property.
             """
 
-            def a_method(self):
+            def a_method(self) -> int:
                 """
                 A method returning 42.
                 """
                 return 42
 
             @memoize
-            def a_property(self):
+            def a_property(self) -> Callable[..., Any]:
                 """
                 A memoized property calling a_method.
                 """
@@ -149,9 +149,9 @@ class TestMemoize(unittest.TestCase):
             result1 = test_instance.a_property
             result2 = test_instance.a_property
 
+        mock_method.assert_called_once()
         self.assertEqual(result1, 42)
         self.assertEqual(result2, 42)
-        mock_method.assert_called_once()
 
 
 if __name__ == "__main__":
