@@ -133,6 +133,34 @@ def test_has_license(self, repo, license_key, expected_result):
     result = github_client.has_license(repo, license_key)
     self.assertEqual(result, expected_result)
 
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get_json):
+        """
+        Test public_repos method of GithubOrgClient class.
+        """
+        # Set up mock to return example payloads
+        mock_get_json.side_effect = [org_payload, repos_payload]
+
+        github_client = GithubOrgClient("testorg")
+        result = github_client.public_repos()
+
+        self.assertEqual(result, expected_repos)
+
+    @patch('client.get_json')
+    def test_public_repos_with_license(self, mock_get_json):
+        """
+        Test public_repos method with license argument of
+        GithubOrgClient class.
+        """
+        # Set up mock to return example payloads
+        mock_get_json.side_effect = [org_payload, repos_payload]
+
+        github_client = GithubOrgClient("testorg")
+        result = github_client.public_repos(license="Apache-2.0")
+
+        # Expected repos with Apache-2.0 license
+        self.assertEqual(result, ["repo1", "repo3"])
+
 
 if __name__ == "__main__":
     unittest.main()
